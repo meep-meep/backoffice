@@ -1,0 +1,11 @@
+{
+  "name": "js-test-back-office",
+  "version": "0.0.1",
+  "description": "back office to configure automatic test runs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Joachim Revol-Tissot",
+  "license": "MIT"
+}
