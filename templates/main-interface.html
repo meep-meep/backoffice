@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test runner back office</title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+
+            .button {
+                display: inline-block;
+                padding: 3px;
+                margin-top: 10px;
+
+                background: #5362b9;
+                color: white;
+                text-decoration: none;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .objective-item {
+                display: inline-block;
+                width: 200px;
+                text-align: center;
+                vertical-align: top;
+            }
+
+            .form-label {
+                text-align: right;
+            }
+
+            .label-group {
+                display: inline-block;
+            }
+
+            .objective-list {
+                margin-bottom: 2em;
+
+                background: #eee;
+            }
+
+            .section-title {
+                margin-bottom: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="section-title">
+            Current objectives
+        </div>
+        <div class="objective-list">
+        <b>
+            <div>
+                <div class="objective-item">
+                    name
+                </div>
+                <div class="objective-item">
+                    status
+                </div>
+                <div class="objective-item">
+                    definition
+                </div>
+            </div>
+        </b>
+<% objectives.forEach(function(objective) { %>
+            <div>
+                <div class="objective-item">
+                    <%= objective.name %>
+                </div>
+                <div class="objective-item">
+                    <%= objective.status %>
+                </div>
+                <div class="objective-item">
+                    <% objective.definition.forEach(function(constraint) { %>
+                    <div>
+                        <b>
+                            <span>
+                                <%= constraint[0] %> =>
+                            </span>
+                        </b>
+                        <span>
+                            <%= constraint[1] %>
+                        </span>
+                    </div>
+                    <% }); %>
+                </div>
+                <div class="button" id="reset-">
+                    reset
+                </div>
+                <div class="button">
+                    remove
+                </div>
+            </div>
+<% }); %>
+        </div>
+        <div class="section-title">
+            Add an objective
+        </div>
+        <form method="POST" action="<%= backOfficeUrl %>add-objective">
+            <div class="label-group">
+                <div class="form-label">Name :</div>
+                <div class="form-label">Test tags :</div>
+                <div class="form-label">Platform tags :</div>
+            </div>
+            <div class="label-group">
+                <input type="text" name="name"/>
+                <br/>
+
+                <input type="text" name="test-tags"/>
+                <br/>
+
+                <input type="text" name="platform-tags"/>
+            </div>
+            <br/>
+
+            <input type="submit" class="button" id="create-objective"/>
+        </form>
+    </body>
+</html>

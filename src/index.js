@@ -1,0 +1,211 @@
+var path = require('path');
+
+var express = require('express');
+var bodyParser = require('body-parser');
+var ejs = require('ejs');
+var RSVP = require('rsvp');
+
+
+var _dataAdapter = null;
+var objectiveStatuses = {};
+
+
+var app = express();
+app.engine('html', ejs.renderFile);
+app.set('views', path.join(__dirname, '../templates'));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.get(
+    '/memory-dump.json',
+    function(request, response, next) {
+        return _dataAdapter.getKeys()
+            .then(function(keys) {
+                return RSVP.all(keys.map(function(key) {
+                    return _dataAdapter.get(key);
+                }))
+                    .then(function(values) {
+                        var result = {};
+                        values.forEach(function(value, index) {
+                            result[keys[index]] = value;
+                        });
+                        response.send(result);
+                    });
+            });
+    }
+);
+
+app.get(
+    '/admin',
+    function(request, response, next) {
+        retrieveAdminData()
+            .then(function(adminData) {
+                response.render('main-interface.html', adminData);
+            })
+    });
+
+app.post(
+    '/add-objective',
+    function(request, response, next) {
+        var name = request.body['name'];
+        var testTags = request.body['test-tags'];
+        var platformTags = request.body['platform-tags'];
+        var creationTime = +(new Date());
+
+        _dataAdapter.get('objectives')
+            .then(function(objectiveNames) {
+                objectiveNames.push(creationTime);
+                return _dataAdapter.set('objectives', objectiveNames);
+            })
+            .then(function() {
+                return RSVP.all([
+                    _dataAdapter.set('objective/' + creationTime + '/name', name),
+                    _dataAdapter.set('objective/' + creationTime + '/definition', [[testTags, platformTags]])
+                ]);
+            })
+            .then(function() {
+                response.redirect('/admin');
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+    });
+
+function convert(tagList) {
+    if(typeof tagList !== 'string') {
+        return tagList;
+    }
+    return tagList.split(',').map(function(element) {return element.trim();});
+}
+
+function matchTags(candidates, reference) {
+    candidates = convert(candidates);
+    reference = convert(reference);
+    console.log('** matching ', candidates)
+    console.log('** to ', reference)
+    return candidates.every(function(candidate) {
+        return reference.indexOf(candidate) !== -1;
+    });
+}
+
+function matchPlatform(candidate, reference) {
+    return true;
+}
+
+function reduceTestResults(resultArray) {
+    return resultArray.reduce(function(element1, element2) {
+        if(element1 === 'no-match') {
+            return element2;
+        }
+        if(element1 === 'failure') {
+            return 'failure';
+        }
+        if(element1 === 'pending' || element2 === 'pending') {
+            return 'pending';
+        }
+        return 'success';
+    }, 'no-match');
+}
+
+function getObjectiveStatus(tests, objectiveId) {
+    var testTags;
+    var result = [];
+
+    return RSVP.hash({
+        results: _dataAdapter.get('results'),
+        objectiveDefinition: _dataAdapter.get('objective/' + objectiveId + '/definition')
+    })
+        .then(function(hash) {
+            tests.forEach(function(test) {
+                for(testTags in test) {}
+                var testResultForEachConstraint = hash.objectiveDefinition.map(function(definition) {
+                    // check that the test qualifies for this constraint
+                    if(matchTags(definition[0], testTags)) {
+                        // check that it was launched on the right platforms
+                        var matchingResults = (hash.results
+                            .filter(function(result) {
+                                return matchTags(definition[0], result.tags) && matchPlatform(definition[1]);
+                            })
+                            .filter(function(result) {
+                                return result.reportTime > objectiveId;
+                            }));
+                        if(!matchingResults.length) {
+                            return 'pending';
+                        }
+                        matchingResults.sort(function(a, b) {return b.reportTime - a.reportTime;});
+                        return !matchingResults[0].failures ? 'success' : 'failure';
+                    }
+                    return 'no-match';
+                });
+                result = result.concat(testResultForEachConstraint);
+            });
+
+            console.log('result: ', result)
+            result = reduceTestResults(result);
+            console.log('result: ', result)
+            return result;
+        });
+}
+
+function retrieveAdminData() {
+    if(!_dataAdapter) {
+        throw(new Error('no db interface set'));
+    }
+
+    var testResults = _dataAdapter.reader();
+
+    var result = {
+        backOfficeUrl: '/'
+    };
+    var expectedResults = {};
+    var testLib;
+
+    return _dataAdapter.get('tests/library')
+        .then(function(testLibrary) {
+            testLib = testLibrary;
+            return _dataAdapter.get('objectives');
+        })
+        .then(function(objectiveIds) {
+            return RSVP.all(objectiveIds.map(function(objectiveId) {
+                return RSVP.hash({
+                    name: _dataAdapter.get('objective/' + objectiveId + '/name'),
+                    definition: _dataAdapter.get('objective/' + objectiveId + '/definition'),
+                    status: getObjectiveStatus(testLib, objectiveId)
+                });
+            }))
+            .then(function(objectives) {
+                result.objectives = objectives.map(function(objective, index) {
+                    return {name: objective.name, status: objective.status, definition: objective.definition};
+                });
+                console.log('objectives', objectives)
+                return result;
+            })
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+}
+
+function setDataAdapter(dataAdapter) {
+    _dataAdapter = dataAdapter;
+}
+
+/*
+{
+    objectiveName: {
+        platform: {
+            testtags: testStatus,
+            ...
+        },
+        ...
+    },
+    ...
+}
+*/
+
+
+module.exports = {
+    middleware: app,
+    setDataAdapter: setDataAdapter
+};
