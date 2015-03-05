@@ -9,8 +9,6 @@
 
             .button {
                 display: inline-block;
-                padding: 3px;
-                margin-top: 10px;
 
                 background: #5362b9;
                 color: white;
@@ -85,10 +83,10 @@
                     </div>
                     <% }); %>
                 </div>
-                <div class="button" id="reset-">
+                <div class="button" id="reset-<%= objective.id %>">
                     reset
                 </div>
-                <div class="button">
+                <div class="button" id="remove-<%= objective.id %>">
                     remove
                 </div>
             </div>
@@ -97,7 +95,7 @@
         <div class="section-title">
             Add an objective
         </div>
-        <form method="POST" action="<%= backOfficeUrl %>add-objective">
+        <form method="POST" action="<%= backOfficeUrl %>objectives">
             <div class="label-group">
                 <div class="form-label">Name :</div>
                 <div class="form-label">Test tags :</div>
@@ -116,5 +114,18 @@
 
             <input type="submit" class="button" id="create-objective"/>
         </form>
+        <script>
+            document.addEventListener('click', function(event) {
+                var objectiveId;
+                if(event.target.id.indexOf('reset-') !== -1) {
+                    objectiveId = event.origin.id.substr(6);
+                    // delete and recreate
+                }
+                else if(event.origin.id.indexOf('remove-') !== -1) {
+                    objectiveId = event.origin.id.substr(7);
+                    // just delete
+                }
+            });
+        </script>
     </body>
 </html>

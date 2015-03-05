@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var RSVP = require('rsvp');
 
+var platformMatcher = require('platform-matcher');
 
 var _dataAdapter = null;
 var objectiveStatuses = {};
@@ -46,7 +47,7 @@ app.get(
     });
 
 app.post(
-    '/add-objective',
+    '/objectives',
     function(request, response, next) {
         var name = request.body['name'];
         var testTags = request.body['test-tags'];
@@ -82,15 +83,9 @@ function convert(tagList) {
 function matchTags(candidates, reference) {
     candidates = convert(candidates);
     reference = convert(reference);
-    console.log('** matching ', candidates)
-    console.log('** to ', reference)
     return candidates.every(function(candidate) {
         return reference.indexOf(candidate) !== -1;
     });
-}
-
-function matchPlatform(candidate, reference) {
-    return true;
 }
 
 function reduceTestResults(resultArray) {
@@ -121,11 +116,14 @@ function getObjectiveStatus(tests, objectiveId) {
                 for(testTags in test) {}
                 var testResultForEachConstraint = hash.objectiveDefinition.map(function(definition) {
                     // check that the test qualifies for this constraint
-                    if(matchTags(definition[0], testTags)) {
+                    var objectiveTestTags = definition[0];
+                    var objectivePlatformTags = definition[1].split(',').map(function(tag) {return tag.trim()});
+
+                    if(matchTags(objectiveTestTags, testTags)) {
                         // check that it was launched on the right platforms
                         var matchingResults = (hash.results
                             .filter(function(result) {
-                                return matchTags(definition[0], result.tags) && matchPlatform(definition[1]);
+                                return matchTags(objectiveTestTags, result.tags) && platformMatcher(objectivePlatformTags, result.ua);
                             })
                             .filter(function(result) {
                                 return result.reportTime > objectiveId;
@@ -141,9 +139,7 @@ function getObjectiveStatus(tests, objectiveId) {
                 result = result.concat(testResultForEachConstraint);
             });
 
-            console.log('result: ', result)
             result = reduceTestResults(result);
-            console.log('result: ', result)
             return result;
         });
 }
@@ -176,9 +172,8 @@ function retrieveAdminData() {
             }))
             .then(function(objectives) {
                 result.objectives = objectives.map(function(objective, index) {
-                    return {name: objective.name, status: objective.status, definition: objective.definition};
+                    return {name: objective.name, status: objective.status, definition: objective.definition, id: objectiveIds[index]};
                 });
-                console.log('objectives', objectives)
                 return result;
             })
         })

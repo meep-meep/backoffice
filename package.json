@@ -12,6 +12,7 @@
     "body-parser": "^1.12.0",
     "ejs": "^2.3.1",
     "express": "^4.12.0",
-    "rsvp": "^3.0.17"
+    "rsvp": "^3.0.17",
+    "platform-matcher": "git://github.com/tsatse/platform-matcher.git"
   }
 }
