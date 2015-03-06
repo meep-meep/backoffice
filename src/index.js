@@ -11,6 +11,11 @@ var platformMatcher = require('platform-matcher');
 var _dataAdapter = null;
 var objectiveStatuses = {};
 
+var NO_PLATFORM_MATCHING = 'No platform matching tags';
+var NO_TEST_MATCHING = 'No test matching tags';
+var PENDING = 'Pending';
+var SUCCESS = 'Success';
+var FAILURE = 'Failure';
 
 var app = express();
 app.engine('html', ejs.renderFile);
@@ -98,17 +103,20 @@ function matchTags(candidates, reference) {
 
 function reduceTestResults(resultArray) {
     return resultArray.reduce(function(element1, element2) {
-        if(element1 === 'no-match') {
+        if(element1 === NO_PLATFORM_MATCHING && element2 === NO_TEST_MATCHING) {
+            return NO_PLATFORM_MATCHING;
+        }
+        if(element1 === NO_TEST_MATCHING || element1 === NO_PLATFORM_MATCHING || element1 === null) {
             return element2;
         }
-        if(element1 === 'failure' || element2 === 'failure') {
-            return 'failure';
+        if(element1 === FAILURE || element2 === FAILURE) {
+            return FAILURE;
         }
-        if(element1 === 'pending' || element2 === 'pending') {
-            return 'pending';
+        if(element1 === PENDING || element2 === PENDING) {
+            return PENDING;
         }
-        return 'success';
-    }, 'no-match');
+        return SUCCESS;
+    }, null);
 }
 
 function getTestResultForEachConstraint(objectiveDefinition, testTags, results, objectiveId) {
@@ -118,20 +126,23 @@ function getTestResultForEachConstraint(objectiveDefinition, testTags, results, 
         var objectivePlatformTags = definition[1].split(',').map(function(tag) {return tag.trim()});
 
         if(matchTags(objectiveTestTags, testTags)) {
+            if(!platformMatcher.isAKnownPlatform(objectivePlatformTags)) {
+                return NO_PLATFORM_MATCHING;
+            }
             // check that it was launched on the right platforms
             var matchingResults = (results
                 .filter(function(result) {
-                    return matchTags(testTags, result.tags) && platformMatcher(objectivePlatformTags, result.ua);
+                    return matchTags(testTags, result.tags) && platformMatcher.match(objectivePlatformTags, result.ua);
                 })
                 .filter(function(result) {
                     return result.reportTime > objectiveId;
                 }));
             if(!matchingResults.length) {
-                return 'pending';
+                return PENDING;
             }
-            return matchingResults.every(function(result) {return !result.failures;}) ? 'success' : 'failure';
+            return matchingResults.every(function(result) {return !result.failures;}) ? SUCCESS : FAILURE;
         }
-        return 'no-match';
+        return NO_TEST_MATCHING;
     });
 }
 
