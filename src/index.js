@@ -93,7 +93,7 @@ function reduceTestResults(resultArray) {
         if(element1 === 'no-match') {
             return element2;
         }
-        if(element1 === 'failure') {
+        if(element1 === 'failure' || element2 === 'failure') {
             return 'failure';
         }
         if(element1 === 'pending' || element2 === 'pending') {
@@ -103,8 +103,36 @@ function reduceTestResults(resultArray) {
     }, 'no-match');
 }
 
+function getTestResultForEachConstraint(objectiveDefinition, testTags, results, objectiveId) {
+    return objectiveDefinition.map(function(definition) {
+        // check that the test qualifies for this constraint
+        var objectiveTestTags = definition[0];
+        var objectivePlatformTags = definition[1].split(',').map(function(tag) {return tag.trim()});
+
+        if(matchTags(objectiveTestTags, testTags)) {
+            // check that it was launched on the right platforms
+            var matchingResults = (results
+                .filter(function(result) {
+                    return matchTags(testTags, result.tags) && platformMatcher(objectivePlatformTags, result.ua);
+                })
+                .filter(function(result) {
+                    return result.reportTime > objectiveId;
+                }));
+            if(!matchingResults.length) {
+                return 'pending';
+            }
+            return matchingResults.every(function(result) {return !result.failures;}) ? 'success' : 'failure';
+        }
+        return 'no-match';
+    });
+}
+
+function getTagsFromTest(test) {
+    for(var testTags in test) {}
+    return testTags;
+}
+
 function getObjectiveStatus(tests, objectiveId) {
-    var testTags;
     var result = [];
 
     return RSVP.hash({
@@ -113,29 +141,12 @@ function getObjectiveStatus(tests, objectiveId) {
     })
         .then(function(hash) {
             tests.forEach(function(test) {
-                for(testTags in test) {}
-                var testResultForEachConstraint = hash.objectiveDefinition.map(function(definition) {
-                    // check that the test qualifies for this constraint
-                    var objectiveTestTags = definition[0];
-                    var objectivePlatformTags = definition[1].split(',').map(function(tag) {return tag.trim()});
-
-                    if(matchTags(objectiveTestTags, testTags)) {
-                        // check that it was launched on the right platforms
-                        var matchingResults = (hash.results
-                            .filter(function(result) {
-                                return matchTags(objectiveTestTags, result.tags) && platformMatcher(objectivePlatformTags, result.ua);
-                            })
-                            .filter(function(result) {
-                                return result.reportTime > objectiveId;
-                            }));
-                        if(!matchingResults.length) {
-                            return 'pending';
-                        }
-                        matchingResults.sort(function(a, b) {return b.reportTime - a.reportTime;});
-                        return !matchingResults[0].failures ? 'success' : 'failure';
-                    }
-                    return 'no-match';
-                });
+                var testResultForEachConstraint = getTestResultForEachConstraint(
+                    hash.objectiveDefinition,
+                    getTagsFromTest(test),
+                    hash.results,
+                    objectiveId
+                    );
                 result = result.concat(testResultForEachConstraint);
             });
 
@@ -164,18 +175,18 @@ function retrieveAdminData() {
         })
         .then(function(objectiveIds) {
             return RSVP.all(objectiveIds.map(function(objectiveId) {
-                return RSVP.hash({
-                    name: _dataAdapter.get('objective/' + objectiveId + '/name'),
-                    definition: _dataAdapter.get('objective/' + objectiveId + '/definition'),
-                    status: getObjectiveStatus(testLib, objectiveId)
+                    return RSVP.hash({
+                        name: _dataAdapter.get('objective/' + objectiveId + '/name'),
+                        definition: _dataAdapter.get('objective/' + objectiveId + '/definition'),
+                        status: getObjectiveStatus(testLib, objectiveId)
+                    });
+                }))
+                .then(function(objectives) {
+                    result.objectives = objectives.map(function(objective, index) {
+                        return {name: objective.name, status: objective.status, definition: objective.definition, id: objectiveIds[index]};
+                    });
+                    return result;
                 });
-            }))
-            .then(function(objectives) {
-                result.objectives = objectives.map(function(objective, index) {
-                    return {name: objective.name, status: objective.status, definition: objective.definition, id: objectiveIds[index]};
-                });
-                return result;
-            })
         })
         .catch(function(error) {
             console.log(error);
