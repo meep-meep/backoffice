@@ -41,6 +41,21 @@
             .section-title {
                 margin-bottom: 1em;
             }
+
+            .status-pending {
+                color: white;
+                background: orange;
+            }
+
+            .status-failure {
+                color: white;
+                background: red;
+            }
+
+            .status-success {
+                color: white;
+                background: green;
+            }
         </style>
     </head>
     <body>
@@ -66,7 +81,7 @@
                 <div class="objective-item">
                     <%= objective.name %>
                 </div>
-                <div class="objective-item">
+                <div class="objective-item status-<%= objective.status %>">
                     <%= objective.status %>
                 </div>
                 <div class="objective-item">
