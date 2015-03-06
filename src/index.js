@@ -1,6 +1,7 @@
 var path = require('path');
 
 var express = require('express');
+var serveStatic = require('serve-static');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var RSVP = require('rsvp');
@@ -16,7 +17,14 @@ app.engine('html', ejs.renderFile);
 app.set('views', path.join(__dirname, '../templates'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(
+    '/static',
+    serveStatic(path.join(
+        __dirname,
+        '..',
+        'static'
+        ))
+);
 
 app.get(
     '/memory-dump.json',
@@ -196,19 +204,6 @@ function retrieveAdminData() {
 function setDataAdapter(dataAdapter) {
     _dataAdapter = dataAdapter;
 }
-
-/*
-{
-    objectiveName: {
-        platform: {
-            testtags: testStatus,
-            ...
-        },
-        ...
-    },
-    ...
-}
-*/
 
 
 module.exports = {
