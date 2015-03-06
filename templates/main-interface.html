@@ -91,6 +91,10 @@
                 border-radius: 6px;
                 background: rgba(0, 0, 0, 0.1);
             }
+
+            .create-objective-field {
+                width: 300px;
+            }
         </style>
     </head>
     <body>
@@ -136,13 +140,13 @@
                     <div class="form-label">Platform tags :</div>
                 </div>
                 <div class="label-group">
-                    <input type="text" name="name" title="any alphanumeric value" required/>
+                    <input class="create-objective-field" type="text" name="name" placeholder="any alphanumeric value" required/>
                     <br/>
 
-                    <input type="text" name="test-tags" title="coma-separated tags" required/>
+                    <input class="create-objective-field" type="text" name="test-tags" placeholder="coma-separated tags" required/>
                     <br/>
 
-                    <input type="text" name="platform-tags" title="coma-separated tags" required/>
+                    <input class="create-objective-field" type="text" name="platform-tags" placeholder="coma-separated tags or 'any'" required/>
                 </div>
                 </div>
 
