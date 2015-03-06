@@ -15,6 +15,10 @@
                 text-decoration: none;
                 text-align: center;
                 cursor: pointer;
+                border: 0;
+                font-size: 16px;
+                line-height: 36px;
+                padding: 0 12px 0 12px;
             }
 
             .objective-item {
@@ -30,6 +34,7 @@
 
             .label-group {
                 display: inline-block;
+                vertical-align: middle;
             }
 
             .objective-list {
@@ -38,23 +43,25 @@
                 background: #eee;
             }
 
-            .section-title {
-                margin-bottom: 1em;
+            .status-pending,
+            .status-failure,
+            .status-success {
+                line-height: 35px;
             }
-
+            
             .status-pending {
                 color: white;
-                background: orange;
+                background: darkorange;
             }
 
             .status-failure {
                 color: white;
-                background: red;
+                background: crimson;
             }
 
             .status-success {
                 color: white;
-                background: green;
+                background: forestgreen;
             }
 
             .arrow {
@@ -63,28 +70,44 @@
                 height: 14px;
                 background: url('/static/images/right-arrow.png');
             }
+
+            .results-header,
+            .results-line {
+                line-height: 36px;
+            }
+            
+            .results-header {
+                color: white;
+                background: rgb(89, 79, 79);
+            }
+
+            .add-objective {
+                padding: 10px;
+                background: #eee;
+            }
+
+            .tag {
+                padding: 4px;
+                border-radius: 6px;
+                background: rgba(0, 0, 0, 0.1);
+            }
         </style>
     </head>
     <body>
-        <div class="section-title">
-            Current objectives
-        </div>
         <div class="objective-list">
-        <b>
-            <div>
-                <div class="objective-item">
-                    name
-                </div>
-                <div class="objective-item">
-                    status
-                </div>
-                <div class="objective-item">
-                    definition
-                </div>
+        <div class="results-header">
+            <div class="objective-item">
+                Name
             </div>
-        </b>
+            <div class="objective-item">
+                Status
+            </div>
+            <div class="objective-item">
+                Definition
+            </div>
+        </div>
 <% objectives.forEach(function(objective) { %>
-            <div>
+            <div class="results-line">
                 <div class="objective-item">
                     <%= objective.name %>
                 </div>
@@ -94,59 +117,36 @@
                 <div class="objective-item">
                     <% objective.definition.forEach(function(constraint) { %>
                     <div>
-                        <span>
-                            <%= constraint[0] %>
-                        </span>
+                        <%- constraint[0].split(',').map(function(tag) {return '<span class="tag">' + tag.trim() + '</span> '}).join('') %>
                         <span class="arrow"></span>
                         <span>
-                            <%= constraint[1] %>
+                        <%- constraint[1].split(',').map(function(tag) {return '<span class="tag">' + tag.trim() + '</span> '}).join('') %>
                         </span>
                     </div>
                     <% }); %>
                 </div>
-                <div class="button" id="reset-<%= objective.id %>">
-                    reset
-                </div>
-                <div class="button" id="remove-<%= objective.id %>">
-                    remove
-                </div>
             </div>
 <% }); %>
         </div>
-        <div class="section-title">
-            Add an objective
-        </div>
-        <form method="POST" action="<%= backOfficeUrl %>objectives">
+        <form class="add-objective" method="POST" action="<%= backOfficeUrl %>objectives">
             <div class="label-group">
-                <div class="form-label">Name :</div>
-                <div class="form-label">Test tags :</div>
-                <div class="form-label">Platform tags :</div>
-            </div>
-            <div class="label-group">
-                <input type="text" name="name"/>
-                <br/>
+                <div class="label-group">
+                    <div class="form-label">Name :</div>
+                    <div class="form-label">Test tags :</div>
+                    <div class="form-label">Platform tags :</div>
+                </div>
+                <div class="label-group">
+                    <input type="text" name="name" title="any alphanumeric value" required/>
+                    <br/>
 
-                <input type="text" name="test-tags"/>
-                <br/>
+                    <input type="text" name="test-tags" title="coma-separated tags" required/>
+                    <br/>
 
-                <input type="text" name="platform-tags"/>
-            </div>
-            <br/>
+                    <input type="text" name="platform-tags" title="coma-separated tags" required/>
+                </div>
+                </div>
 
-            <input type="submit" class="button" id="create-objective"/>
+            <input type="submit" class="button" id="create-objective" value="Create"/>
         </form>
-        <script>
-            document.addEventListener('click', function(event) {
-                var objectiveId;
-                if(event.target.id.indexOf('reset-') !== -1) {
-                    objectiveId = event.origin.id.substr(6);
-                    // delete and recreate
-                }
-                else if(event.origin.id.indexOf('remove-') !== -1) {
-                    objectiveId = event.origin.id.substr(7);
-                    // just delete
-                }
-            });
-        </script>
     </body>
 </html>
