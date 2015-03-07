@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var RSVP = require('rsvp');
 
-var platformMatcher = require('platform-matcher');
+var platformMatcher = require('mm-platform-matcher');
 
 var _dataAdapter = null;
 var objectiveStatuses = {};
