@@ -37,12 +37,6 @@
                 vertical-align: middle;
             }
 
-            .objective-list {
-                margin-bottom: 2em;
-
-                background: #eee;
-            }
-
             .status-pending,
             .status-failure,
             .status-success {
@@ -76,7 +70,8 @@
                 line-height: 36px;
             }
             
-            .results-header {
+            .results-header,
+            .title {
                 color: white;
                 background: rgb(89, 79, 79);
             }
@@ -95,10 +90,14 @@
             .create-objective-field {
                 width: 300px;
             }
+
+            .title {
+                padding: 10px;
+            }
         </style>
     </head>
     <body>
-        <div class="objective-list">
+        <div>Meep meep test runner</div>
         <div class="results-header">
             <div class="objective-item">
                 Name
@@ -132,6 +131,7 @@
             </div>
 <% }); %>
         </div>
+            <div class="title">Create a new test set</div>
         <form class="add-objective" method="POST" action="<%= backOfficeUrl %>objectives">
             <div class="label-group">
                 <div class="label-group">
