@@ -5,20 +5,22 @@
         <style>
             body {
                 font-family: sans-serif;
+                margin: 0;
+                color: #444;
             }
 
             .button {
                 display: inline-block;
-
                 background: #5362b9;
                 color: white;
                 text-decoration: none;
                 text-align: center;
                 cursor: pointer;
                 border: 0;
-                font-size: 16px;
+                font-size: 14px;
                 line-height: 36px;
                 padding: 0 12px 0 12px;
+                border-radius: 3px;
             }
 
             .objective-item {
@@ -26,43 +28,52 @@
                 width: 200px;
                 text-align: center;
                 vertical-align: top;
+                font-size: 14px;
             }
 
             .form-label {
                 text-align: right;
+                line-height: 23px;
+                font-size: 14px;
             }
 
             .label-group {
                 display: inline-block;
-                vertical-align: middle;
+                vertical-align: baseline;
             }
 
             .status-pending,
             .status-failure,
             .status-success {
-                line-height: 35px;
+                color: #444;
+                line-height: 32px;
+                vertical-align: middle;
+                border-radius: 3px;
             }
             
             .status-pending {
-                color: white;
-                background: darkorange;
+                background: rgb(253, 223, 187);
             }
 
             .status-failure {
-                color: white;
-                background: crimson;
+                background: rgb(255, 137, 137);
             }
 
             .status-success {
-                color: white;
-                background: forestgreen;
+                background: rgb(173, 246, 173);
             }
 
             .arrow {
                 display: inline-block;
                 width: 14px;
                 height: 14px;
+                vertical-align: middle;
+
                 background: url('/static/images/right-arrow.png');
+            }
+
+            .results-header {
+                margin-bottom: 2px;
             }
 
             .results-header,
@@ -71,33 +82,67 @@
             }
             
             .results-header,
-            .title {
-                color: white;
-                background: rgb(89, 79, 79);
+            .section-title {
+                color: #444;
+                background: rgb(230, 219, 219);
+                line-height: 36px;
+                font-size: 14px;
+            }
+
+            .section-title {
+                margin-top: 20px;
+                padding-left: 10px;
             }
 
             .add-objective {
                 padding: 10px;
-                background: #eee;
             }
 
             .tag {
-                padding: 4px;
-                border-radius: 6px;
+                padding: 9px;
+                border-radius: 3px;
                 background: rgba(0, 0, 0, 0.1);
             }
 
             .create-objective-field {
+                line-height: 14px;
+                font-size: 14px;
                 width: 300px;
+                border: 2px solid transparent;
+                color: #acacac;
+            }
+
+            .create-objective-field::-webkit-input-placeholder {
+                color: #ddd;
+                padding-top: 2px;
+            }
+
+            .create-objective-field:-moz-placeholder {
+                color: #ddd;
+                padding-top: 2px;
+            }
+
+            .create-objective-field::-moz-placeholder {
+                color: #ddd;
+                padding-top: 2px;
+            }
+            
+            .create-objective-field:-ms-input-placeholder {
+                color: #ddd;
+                padding-top: 2px;
             }
 
             .title {
-                padding: 10px;
+                padding-left: 10px;
+                line-height: 36px;
+                color: white;
+                background: black;
+                font-size: 17px;
             }
         </style>
     </head>
     <body>
-        <div>Meep meep test runner</div>
+        <div class="title">Meep meep test runner</div>
         <div class="results-header">
             <div class="objective-item">
                 Name
@@ -131,7 +176,7 @@
             </div>
 <% }); %>
         </div>
-            <div class="title">Create a new test set</div>
+            <div class="section-title">Create a new test set</div>
         <form class="add-objective" method="POST" action="<%= backOfficeUrl %>objectives">
             <div class="label-group">
                 <div class="label-group">
@@ -149,7 +194,8 @@
                     <input class="create-objective-field" type="text" name="platform-tags" placeholder="Coma-separated tags or 'any'" required/>
                 </div>
                 </div>
-
+            <br/>
+            <br/>
             <input type="submit" class="button" id="create-objective" value="Create"/>
         </form>
     </body>
