@@ -8,6 +8,10 @@
                 margin: 0;
                 color: #444;
             }
+            .meep-meep {
+                font-weight: bold;
+                color: yellow;
+            }
 
             .button {
                 display: inline-block;
@@ -112,6 +116,10 @@
                 color: #acacac;
             }
 
+            .create-objective-field:focus {
+                //border-style: none;
+            }
+
             .create-objective-field::-webkit-input-placeholder {
                 color: #ddd;
                 padding-top: 2px;
@@ -142,7 +150,8 @@
         </style>
     </head>
     <body>
-        <div class="title">Meep meep test runner</div>
+        <div class="title"><span class="meep-meep">Meep-meep</span> test runner</div>
+<% if(objectives.length) { %>
         <div class="results-header">
             <div class="objective-item">
                 Name
@@ -154,6 +163,7 @@
                 Definition
             </div>
         </div>
+<% } %>
 <% objectives.forEach(function(objective) { %>
             <div class="results-line">
                 <div class="objective-item">
