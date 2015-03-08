@@ -108,35 +108,45 @@
                 background: rgba(0, 0, 0, 0.1);
             }
 
+            .name-field {
+                font-weight: bold;
+            }
+
             .create-objective-field {
                 line-height: 14px;
                 font-size: 14px;
                 width: 300px;
                 border: 2px solid transparent;
-                color: #acacac;
+                color: #5362b9;
             }
 
             .create-objective-field:focus {
-                //border-style: none;
+                border: 2px solid #eee;
+                padding-left: 1px;
+                outline: none;
             }
 
             .create-objective-field::-webkit-input-placeholder {
                 color: #ddd;
+                font-weight: normal;
                 padding-top: 2px;
             }
 
             .create-objective-field:-moz-placeholder {
                 color: #ddd;
+                font-weight: normal;
                 padding-top: 2px;
             }
 
             .create-objective-field::-moz-placeholder {
                 color: #ddd;
+                font-weight: normal;
                 padding-top: 2px;
             }
             
             .create-objective-field:-ms-input-placeholder {
                 color: #ddd;
+                font-weight: normal;
                 padding-top: 2px;
             }
 
@@ -195,7 +205,7 @@
                     <div class="form-label">Platform tags :</div>
                 </div>
                 <div class="label-group">
-                    <input class="create-objective-field" type="text" name="name" placeholder="Any alphanumeric value" required/>
+                    <input class="create-objective-field name-field" type="text" name="name" placeholder="Any alphanumeric value" required/>
                     <br/>
 
                     <input class="create-objective-field" type="text" name="test-tags" placeholder="Coma-separated tags" required/>
