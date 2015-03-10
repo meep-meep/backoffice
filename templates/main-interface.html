@@ -2,29 +2,10 @@
 <html>
     <head>
         <title>Test runner back office</title>
+        <link rel="stylesheet" type="text/css" href="/styles/base.css"/>
         <style>
-            body {
-                font-family: sans-serif;
-                margin: 0;
-                color: #444;
-            }
-
-            .meep-meep {
-                color: rgb(253, 253, 198);
-            }
-
-            .button {
+            #create-objective {
                 display: inline-block;
-                background: #5362b9;
-                color: white;
-                text-decoration: none;
-                text-align: center;
-                cursor: pointer;
-                border: 0;
-                font-size: 14px;
-                line-height: 36px;
-                padding: 0 12px 0 12px;
-                border-radius: 3px;
             }
 
             .objective-item {
@@ -32,27 +13,13 @@
                 width: 200px;
                 text-align: center;
                 vertical-align: top;
-                font-size: 14px;
-            }
-
-            .form-label {
-                text-align: right;
-                line-height: 23px;
-                font-size: 14px;
-            }
-
-            .label-group {
-                display: inline-block;
-                vertical-align: baseline;
             }
 
             .status-pending,
             .status-failure,
             .status-success {
-                color: #444;
                 line-height: 32px;
                 vertical-align: middle;
-                border-radius: 3px;
             }
             
             .status-pending {
@@ -73,38 +40,14 @@
                 height: 14px;
                 vertical-align: middle;
 
-                background: url('/static/images/right-arrow.png');
-            }
-
-            .results-header {
-                margin-bottom: 2px;
-            }
-
-            .results-header,
-            .results-line {
-                line-height: 36px;
-            }
-            
-            .results-header,
-            .section-title {
-                color: #444;
-                background: rgb(230, 219, 219);
-                line-height: 36px;
-                font-size: 14px;
-            }
-
-            .section-title {
-                margin-top: 20px;
-                padding-left: 10px;
+                background: url('/back-office/images/right-arrow.png');
             }
 
             .add-objective {
                 padding: 10px;
             }
 
-            .tag {
-                padding: 9px;
-                border-radius: 3px;
+            .definition-tag {
                 background: rgba(0, 0, 0, 0.1);
             }
 
@@ -113,56 +56,18 @@
             }
 
             .create-objective-field {
-                line-height: 14px;
-                font-size: 14px;
                 width: 300px;
-                border: 2px solid transparent;
-                color: #5362b9;
-            }
-
-            .create-objective-field:focus {
-                border: 2px solid #eee;
-                padding-left: 1px;
-                outline: none;
-            }
-
-            .create-objective-field::-webkit-input-placeholder {
-                color: #ddd;
-                font-weight: normal;
-                padding-top: 2px;
-            }
-
-            .create-objective-field:-moz-placeholder {
-                color: #ddd;
-                font-weight: normal;
-                padding-top: 2px;
-            }
-
-            .create-objective-field::-moz-placeholder {
-                color: #ddd;
-                font-weight: normal;
-                padding-top: 2px;
-            }
-            
-            .create-objective-field:-ms-input-placeholder {
-                color: #ddd;
-                font-weight: normal;
-                padding-top: 2px;
-            }
-
-            .title {
-                padding-left: 10px;
-                line-height: 36px;
-                color: white;
-                background: black;
-                font-size: 17px;
             }
         </style>
     </head>
     <body>
-        <div class="title"><span class="meep-meep">Meep-meep</span> - <b>Test runner back office</b></div>
+        <div class="title">
+            <span class="logo">
+            </span>
+            <span class="meep-meep">Meep-Meep</span>
+            - Test runner back office</div>
 <% if(objectives.length) { %>
-        <div class="results-header">
+        <div class="table-header">
             <div class="objective-item">
                 Name
             </div>
@@ -175,20 +80,20 @@
         </div>
 <% } %>
 <% objectives.forEach(function(objective) { %>
-            <div class="results-line">
+            <div class="table-line">
                 <div class="objective-item">
                     <%= objective.name %>
                 </div>
-                <div class="objective-item status-<%= objective.status.toLowerCase() %>">
+                <div class="objective-item tag status-<%= objective.status.toLowerCase() %>">
                     <%= objective.status %>
                 </div>
                 <div class="objective-item">
                     <% objective.definition.forEach(function(constraint) { %>
                     <div>
-                        <%- constraint[0].split(',').map(function(tag) {return '<span class="tag">' + tag.trim() + '</span> '}).join('') %>
+                        <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
                         <span class="arrow"></span>
                         <span>
-                        <%- constraint[1].split(',').map(function(tag) {return '<span class="tag">' + tag.trim() + '</span> '}).join('') %>
+                        <%- constraint[1].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
                         </span>
                     </div>
                     <% }); %>
@@ -205,18 +110,18 @@
                     <div class="form-label">Platform tags :</div>
                 </div>
                 <div class="label-group">
-                    <input class="create-objective-field name-field" type="text" name="name" placeholder="Any alphanumeric value" required/>
+                    <input class="form-text-field create-objective-field name-field" type="text" name="name" placeholder="Any alphanumeric value" required/>
                     <br/>
 
-                    <input class="create-objective-field" type="text" name="test-tags" placeholder="Coma-separated tags" required/>
+                    <input class="form-text-field create-objective-field" type="text" name="test-tags" placeholder="Coma-separated tags" required/>
                     <br/>
 
-                    <input class="create-objective-field" type="text" name="platform-tags" placeholder="Coma-separated tags or 'any'" required/>
+                    <input class="form-text-field create-objective-field" type="text" name="platform-tags" placeholder="Coma-separated tags or 'any'" required/>
                 </div>
                 </div>
             <br/>
             <br/>
-            <input type="submit" class="button" id="create-objective" value="Create"/>
+            <input type="submit" class="button action" id="create-objective" value="Create"/>
         </form>
     </body>
 </html>

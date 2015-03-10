@@ -8,6 +8,7 @@ var RSVP = require('rsvp');
 
 var platformMatcher = require('mm-platform-matcher');
 
+
 var _dataAdapter = null;
 var objectiveStatuses = {};
 
@@ -17,13 +18,14 @@ var PENDING = 'Pending';
 var SUCCESS = 'Success';
 var FAILURE = 'Failure';
 
+
 var app = express();
 app.engine('html', ejs.renderFile);
 app.set('views', path.join(__dirname, '../templates'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-    '/static',
+    '/back-office',
     serveStatic(path.join(
         __dirname,
         '..',
@@ -85,6 +87,7 @@ app.post(
                 console.error(error);
             });
     });
+
 
 function convert(tagList) {
     if(typeof tagList !== 'string') {

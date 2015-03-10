@@ -6,6 +6,13 @@
   "scripts": {
     "test": "mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meep-meep/backoffice.git"
+  },
+  "keywords": [
+    "meep-meep"
+  ],
   "author": "Joachim Revol-Tissot",
   "license": "MIT",
   "dependencies": {
@@ -14,6 +21,11 @@
     "express": "^4.12.0",
     "mm-platform-matcher": "git://github.com/meep-meep/platform-matcher.git",
     "rsvp": "^3.0.17",
-    "serve-static": "^1.9.1"
-  }
+    "serve-static": "^1.9.1",
+    "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meep-meep/backoffice/issues"
+  },
+  "homepage": "https://github.com/meep-meep/backoffice.git"
 }
