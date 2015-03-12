@@ -9,10 +9,8 @@
             }
 
             .objective-item {
-                display: inline-block;
                 width: 200px;
                 text-align: center;
-                vertical-align: top;
             }
 
             .status-pending,
@@ -52,11 +50,48 @@
             }
 
             .name-field {
+                display: inline-block;
                 font-weight: bold;
+                margin-bottom: 6px;
             }
 
             .create-objective-field {
                 width: 300px;
+            }
+
+            .tests-field {
+                flex-grow: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: red;
+            }
+
+            .platforms-field {
+                flex-grow: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .constraint {
+                background: #eee;
+                padding: 10px;
+                border-radius: 3px;
+                margin-bottom: 10px;
+            }
+
+            .constraints-box {
+                display: table;
+                margin: 0 0 10px 10px;
+            }
+
+            .add-constraint {
+                text-align: center;
+                font-size: 18px;
+                text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+                font-weight: lighter;
+                cursor: pointer;
             }
         </style>
     </head>
@@ -64,34 +99,48 @@
         <div class="title">
             <span class="logo">
             </span>
-            <span class="meep-meep">Meep-Meep</span>
-            - Test runner back office</div>
+            <span class="meep-meep">
+                Meep-Meep
+            </span>
+            <span>
+                -Test runner back office
+            </span>
+        </div>
 <% if(objectives.length) { %>
+        <div class="section-title">Assessments</div>
         <div class="table-header">
-            <div class="objective-item">
+            <div class="table-item objective-item">
                 Name
             </div>
-            <div class="objective-item">
+            <div class="table-item objective-item">
                 Status
             </div>
-            <div class="objective-item">
-                Definition
+            <div class="table-item tests-field">
+                Tests
+            </div>
+            <div class="table-item platforms-field">
+                Platforms
             </div>
         </div>
 <% } %>
 <% objectives.forEach(function(objective) { %>
             <div class="table-line">
-                <div class="objective-item">
+                <div class="table-item objective-item">
                     <%= objective.name %>
                 </div>
-                <div class="objective-item tag status-<%= objective.status.toLowerCase() %>">
+                <div class="table-item objective-item tag status-<%= objective.status.toLowerCase() %>">
                     <%= objective.status %>
                 </div>
-                <div class="objective-item">
+                <div class="table-item tests-field">
                     <% objective.definition.forEach(function(constraint) { %>
                     <div>
                         <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
-                        <span class="arrow"></span>
+                    </div>
+                    <% }); %>
+                </div>
+                <div class="table-item platforms-field">
+                    <% objective.definition.forEach(function(constraint) { %>
+                    <div>
                         <span>
                         <%- constraint[1].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
                         </span>
@@ -101,26 +150,55 @@
             </div>
 <% }); %>
         </div>
-            <div class="section-title">Create a new test set</div>
+        <div class="section-title">Create a new assessment</div>
         <form class="add-objective" method="POST" action="<%= backOfficeUrl %>objectives">
-            <div class="label-group">
-                <div class="label-group">
-                    <div class="form-label">Name :</div>
-                    <div class="form-label">Test tags :</div>
-                    <div class="form-label">Platform tags :</div>
+            <div>
+                <div class="form-label">
+                    Name :
                 </div>
-                <div class="label-group">
-                    <input class="form-text-field create-objective-field name-field" type="text" name="name" placeholder="Any alphanumeric value" required/>
-                    <br/>
+                <input
+                    class="form-text-field create-objective-field name-field"
+                    type="text"
+                    name="name"
+                    placeholder="Any alphanumeric value"
+                    required
+                    />
+            </div>
+            <div class="form-label">
+                Required test cases :
+            </div>
+            <div class="constraints-box">
+                <div class="constraint">
+                    <div class="label-group">
+                        <div class="grouped-form-label">
+                            Tests :
+                        </div>
+                        <div class="grouped-form-label">
+                            Platforms :
+                        </div>
+                    </div>
+                    <div class="label-group">
+                        <input
+                            class="grouped-form-text-field create-objective-field"
+                            type="text"
+                            name="test-tags"
+                            placeholder="Coma-separated test tags"
+                            required
+                            />
 
-                    <input class="form-text-field create-objective-field" type="text" name="test-tags" placeholder="Coma-separated tags" required/>
-                    <br/>
-
-                    <input class="form-text-field create-objective-field" type="text" name="platform-tags" placeholder="Coma-separated tags or 'any'" required/>
+                        <input
+                            class="grouped-form-text-field create-objective-field"
+                            type="text"
+                            name="platform-tags"
+                            placeholder="Coma-separated platform tags or 'any'"
+                            required
+                            />
+                    </div>
                 </div>
+                <div class="constraint add-constraint">
+                    +
                 </div>
-            <br/>
-            <br/>
+            </div>
             <input type="submit" class="button action" id="create-objective" value="Create"/>
         </form>
     </body>
