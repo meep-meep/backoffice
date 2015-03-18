@@ -19,7 +19,7 @@ var SUCCESS = 'Success';
 var FAILURE = 'Failure';
 
 
-var app = express.Router();
+var app = express();
 app.engine('html', ejs.renderFile);
 app.set('views', path.join(__dirname, '../templates'));
 
