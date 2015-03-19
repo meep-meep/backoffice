@@ -9,13 +9,20 @@
             }
 
             .assessment-item {
-                width: 200px;
                 text-align: center;
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+            }
+
+            .fixed-column {
+                width: 200px;
             }
 
             .status-pending,
             .status-failure,
-            .status-success {
+            .status-success,
+            .status-no-test-matching-tags,
+            .status-no-platform-matching-tags {
                 line-height: 32px;
                 vertical-align: middle;
             }
@@ -50,19 +57,14 @@
                 width: 300px;
             }
 
-            .tests-field {
+            .tests-column {
                 flex-grow: 1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: red;
+                text-align: right;
             }
 
-            .platforms-field {
+            .platforms-column {
                 flex-grow: 1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                text-align: left;
             }
 
             .constraint {
@@ -98,30 +100,38 @@
             </span>
         </div>
 <% if(assessments.length) { %>
-        <div class="section-title">Assessments</div>
-        <div class="table-header">
-            <div class="table-item assessment-item">
+    <div class="section-title">Assessments</div>
+
+    <div class="table">
+        <div class="table-column fixed-column">
+            <div class="table-column-header assessment-item">
                 Name
             </div>
-            <div class="table-item assessment-item">
-                Status
-            </div>
-            <div class="table-item tests-field">
-                Tests
-            </div>
-            <div class="table-item platforms-field">
-                Platforms
-            </div>
-        </div>
-<% } %>
-<% assessments.forEach(function(assessment) { %>
-            <div class="table-line">
+            <% assessments.forEach(function(assessment) { %>
                 <div class="table-item assessment-item">
                     <%= assessment.name %>
                 </div>
-                <div class="table-item assessment-item tag status-<%= assessment.status.toLowerCase() %>">
-                    <%= assessment.status %>
+            <% }); %>
+        </div>
+
+        <div class="table-column fixed-column">
+            <div class="table-column-header assessment-item">
+                Status
+            </div>
+            <% assessments.forEach(function(assessment) { %>
+                <div class="table-item assessment-item">
+                    <div class="tag status-<%= assessment.status.toLowerCase().replace(/ /g, '-') %>">
+                        <%= assessment.status %>
+                    </div>
                 </div>
+            <% }); %>
+        </div>
+
+        <div class="table-column tests-column">
+            <div class="table-column-header assessment-item">
+                Tests
+            </div>
+            <% assessments.forEach(function(assessment) { %>
                 <div class="table-item tests-field">
                     <% assessment.definition.forEach(function(constraint) { %>
                     <div>
@@ -129,6 +139,14 @@
                     </div>
                     <% }); %>
                 </div>
+            <% }); %>
+        </div>
+
+        <div class="table-column platforms-column">
+            <div class="table-column-header assessment-item">
+                Platforms
+            </div>
+            <% assessments.forEach(function(assessment) { %>
                 <div class="table-item platforms-field">
                     <% assessment.definition.forEach(function(constraint) { %>
                     <div>
@@ -138,8 +156,10 @@
                     </div>
                     <% }); %>
                 </div>
-            </div>
-<% }); %>
+            <% }); %>
+        </div>
+    </div>
+<% } %>
         </div>
         <div class="section-title">Create a new assessment</div>
         <form class="add-assessment" method="POST" action="<%= backOfficeUrl %>assessments">
@@ -186,9 +206,11 @@
                             />
                     </div>
                 </div>
+                <!--
                 <div class="constraint add-constraint">
                     +
                 </div>
+                -->
             </div>
             <input type="submit" class="button action" id="create-assessment" value="Create"/>
         </form>
