@@ -19,10 +19,10 @@
     "body-parser": "^1.12.0",
     "ejs": "^2.3.1",
     "express": "^4.12.0",
-    "mm-platform-matcher": "git://github.com/meep-meep/platform-matcher.git",
     "rsvp": "^3.0.17",
     "serve-static": "^1.9.1",
-    "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git"
+    "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git",
+    "mm-assessments": "https://github.com/tsatse/assessments.git"
   },
   "bugs": {
     "url": "https://github.com/meep-meep/backoffice/issues"

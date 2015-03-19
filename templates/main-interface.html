@@ -4,11 +4,11 @@
         <title>Test runner back office</title>
         <link rel="stylesheet" type="text/css" href="/styles/base.css"/>
         <style>
-            #create-objective {
+            #create-assessment {
                 display: inline-block;
             }
 
-            .objective-item {
+            .assessment-item {
                 width: 200px;
                 text-align: center;
             }
@@ -41,7 +41,7 @@
                 background: url('/back-office/images/right-arrow.png');
             }
 
-            .add-objective {
+            .add-assessment {
                 padding: 10px;
             }
 
@@ -55,7 +55,7 @@
                 margin-bottom: 6px;
             }
 
-            .create-objective-field {
+            .create-assessment-field {
                 width: 300px;
             }
 
@@ -106,13 +106,13 @@
                 -Test runner back office
             </span>
         </div>
-<% if(objectives.length) { %>
+<% if(assessments.length) { %>
         <div class="section-title">Assessments</div>
         <div class="table-header">
-            <div class="table-item objective-item">
+            <div class="table-item assessment-item">
                 Name
             </div>
-            <div class="table-item objective-item">
+            <div class="table-item assessment-item">
                 Status
             </div>
             <div class="table-item tests-field">
@@ -123,23 +123,23 @@
             </div>
         </div>
 <% } %>
-<% objectives.forEach(function(objective) { %>
+<% assessments.forEach(function(assessment) { %>
             <div class="table-line">
-                <div class="table-item objective-item">
-                    <%= objective.name %>
+                <div class="table-item assessment-item">
+                    <%= assessment.name %>
                 </div>
-                <div class="table-item objective-item tag status-<%= objective.status.toLowerCase() %>">
-                    <%= objective.status %>
+                <div class="table-item assessment-item tag status-<%= assessment.status.toLowerCase() %>">
+                    <%= assessment.status %>
                 </div>
                 <div class="table-item tests-field">
-                    <% objective.definition.forEach(function(constraint) { %>
+                    <% assessment.definition.forEach(function(constraint) { %>
                     <div>
                         <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
                     </div>
                     <% }); %>
                 </div>
                 <div class="table-item platforms-field">
-                    <% objective.definition.forEach(function(constraint) { %>
+                    <% assessment.definition.forEach(function(constraint) { %>
                     <div>
                         <span>
                         <%- constraint[1].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
@@ -151,13 +151,13 @@
 <% }); %>
         </div>
         <div class="section-title">Create a new assessment</div>
-        <form class="add-objective" method="POST" action="<%= backOfficeUrl %>objectives">
+        <form class="add-assessment" method="POST" action="<%= backOfficeUrl %>assessments">
             <div>
                 <div class="form-label">
                     Name :
                 </div>
                 <input
-                    class="form-text-field create-objective-field name-field"
+                    class="form-text-field create-assessment-field name-field"
                     type="text"
                     name="name"
                     placeholder="Any alphanumeric value"
@@ -179,7 +179,7 @@
                     </div>
                     <div class="label-group">
                         <input
-                            class="grouped-form-text-field create-objective-field"
+                            class="grouped-form-text-field create-assessment-field"
                             type="text"
                             name="test-tags"
                             placeholder="Coma-separated test tags"
@@ -187,7 +187,7 @@
                             />
 
                         <input
-                            class="grouped-form-text-field create-objective-field"
+                            class="grouped-form-text-field create-assessment-field"
                             type="text"
                             name="platform-tags"
                             placeholder="Coma-separated platform tags or 'any'"
@@ -199,7 +199,7 @@
                     +
                 </div>
             </div>
-            <input type="submit" class="button action" id="create-objective" value="Create"/>
+            <input type="submit" class="button action" id="create-assessment" value="Create"/>
         </form>
     </body>
 </html>
