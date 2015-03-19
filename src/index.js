@@ -58,12 +58,12 @@ function retrieveAdminData() {
             };
         })
         .catch(function(error) {
-            console.log(error);
+            console.error(error);
         });
 }
 
 
-module.exports = function(dataAdapter) {
-    _assessments = new Assessments(dataAdapter);
+module.exports = function(assessments) {
+    _assessments = assessments;
     return app;
 };
