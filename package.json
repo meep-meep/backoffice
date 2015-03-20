@@ -22,7 +22,7 @@
     "rsvp": "^3.0.17",
     "serve-static": "^1.9.1",
     "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git",
-    "mm-assessments": "https://github.com/tsatse/assessments.git"
+    "mm-assessments": "git://github.com/meep-meep/assessments.git"
   },
   "bugs": {
     "url": "https://github.com/meep-meep/backoffice/issues"
