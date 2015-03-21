@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test runner back office</title>
+        <link rel="stylesheet" type="text/css" href="/styles/base.css"/>
+        <style>
+            #create-assessment {
+                display: inline-block;
+            }
+
+            .assessment-item {
+                text-align: center;
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+            }
+
+            .fixed-column {
+                width: 200px;
+            }
+
+            .status-pending,
+            .status-failure,
+            .status-success,
+            .status-no-test-matching-tags,
+            .status-no-platform-matching-tags {
+                line-height: 32px;
+                vertical-align: middle;
+            }
+            
+            .status-pending {
+                background: rgb(253, 223, 187);
+            }
+
+            .status-failure {
+                background: rgb(255, 137, 137);
+            }
+
+            .status-success {
+                background: rgb(173, 246, 173);
+            }
+
+            .add-assessment {
+                padding: 10px;
+            }
+
+            .definition-tag {
+                background: rgba(0, 0, 0, 0.1);
+            }
+
+            .name-field {
+                display: inline-block;
+                font-weight: bold;
+                margin-bottom: 6px;
+            }
+
+            .create-assessment-field {
+                width: 300px;
+            }
+
+            .tests-column {
+                flex-grow: 1;
+                text-align: right;
+            }
+
+            .platforms-column {
+                flex-grow: 1;
+                text-align: left;
+            }
+
+            .constraint {
+                background: #eee;
+                padding: 10px;
+                border-radius: 3px;
+                margin-bottom: 10px;
+            }
+
+            .constraints-box {
+                display: table;
+                margin: 0 0 10px 10px;
+            }
+
+            .add-constraint {
+                text-align: center;
+                font-size: 18px;
+                text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+                font-weight: lighter;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="title">
+            <span class="logo">
+            </span>
+            <span class="meep-meep">
+                Meep-Meep
+            </span>
+            <span>
+                -Assessments
+            </span>
+        </div>
+<% if(assessments.length) { %>
+    <div class="table">
+        <div class="table-column fixed-column">
+            <div class="table-column-header assessment-item">
+                Name
+            </div>
+            <% assessments.forEach(function(assessment) { %>
+                <div class="table-item assessment-item">
+                    <%= assessment.name %>
+                </div>
+            <% }); %>
+        </div>
+
+        <div class="table-column fixed-column">
+            <div class="table-column-header assessment-item">
+                Status
+            </div>
+            <% assessments.forEach(function(assessment) { %>
+                <div class="table-item assessment-item">
+                    <div class="tag status-<%= assessment.status.toLowerCase().replace(/ /g, '-') %>">
+                        <%= assessment.status %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <div class="table-column tests-column">
+            <div class="table-column-header assessment-item">
+                Tests
+            </div>
+            <% assessments.forEach(function(assessment) { %>
+                <div class="table-item tests-field">
+                    <% assessment.definition.forEach(function(constraint) { %>
+                    <div>
+                        <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
+                    </div>
+                    <% }); %>
+                </div>
+            <% }); %>
+        </div>
+
+        <div class="table-column platforms-column">
+            <div class="table-column-header assessment-item">
+                Platforms
+            </div>
+            <% assessments.forEach(function(assessment) { %>
+                <div class="table-item platforms-field">
+                    <% assessment.definition.forEach(function(constraint) { %>
+                    <div>
+                        <span>
+                        <%- constraint[1].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
+                        </span>
+                    </div>
+                    <% }); %>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+<% } %>
+        </div>
+        <div class="section-title">Create a new assessment</div>
+        <form class="add-assessment" method="POST" action="<%= backOfficeUrl %>assessments">
+            <div>
+                <div class="form-label">
+                    Name :
+                </div>
+                <input
+                    class="form-text-field create-assessment-field name-field"
+                    type="text"
+                    name="name"
+                    placeholder="Any alphanumeric value"
+                    required
+                    />
+            </div>
+            <div class="form-label">
+                Required test cases :
+            </div>
+            <div class="constraints-box">
+                <div class="constraint">
+                    <div class="label-group">
+                        <div class="grouped-form-label">
+                            Tests :
+                        </div>
+                        <div class="grouped-form-label">
+                            Platforms :
+                        </div>
+                    </div>
+                    <div class="label-group">
+                        <input
+                            class="grouped-form-text-field create-assessment-field"
+                            type="text"
+                            name="test-tags"
+                            placeholder="Coma-separated test tags"
+                            required
+                            />
+
+                        <input
+                            class="grouped-form-text-field create-assessment-field"
+                            type="text"
+                            name="platform-tags"
+                            placeholder="Coma-separated platform tags or 'any'"
+                            required
+                            />
+                    </div>
+                </div>
+                <!--
+                <div class="constraint add-constraint">
+                    +
+                </div>
+                -->
+            </div>
+            <input type="submit" class="button action" id="create-assessment" value="Create"/>
+        </form>
+    </body>
+</html>

@@ -23,12 +23,25 @@ app.use(
         ))
 );
 
+
 app.get(
-    '/admin',
+    '/back-office',
+    function(request, response, next) {
+        response.render('main-interface.html', {});
+    });
+
+app.get(
+    '/back-office/tests',
+    function(request, response, next) {
+        response.render('test-editing.html', {});
+    });
+
+app.get(
+    '/back-office/assessments',
     function(request, response, next) {
         retrieveAdminData()
             .then(function(adminData) {
-                response.render('main-interface.html', adminData);
+                response.render('assessments.html', adminData);
             })
     });
 
