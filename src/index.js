@@ -15,7 +15,7 @@ app.set('views', path.join(__dirname, '../templates'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-    '/back-office',
+    '/back-office/static',
     serveStatic(path.join(
         __dirname,
         '..',
