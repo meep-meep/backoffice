@@ -6,17 +6,8 @@
         <link rel="stylesheet" type="text/css" href="/back-office/static/style/style.css"/>
     </head>
     <body>
-        <div class="title">
-            <span class="logo">
-            </span>
-            <span class="meep-meep">
-                Meep-Meep
-            </span>
-            <span>
-                -Assessments
-            </span>
-
-        </div>
+        <% var title = 'Assessments'; %>
+        <% include title.html %>
 <% if(assessments.length) { %>
     <div class="table">
         <div class="table-column fixed-column">
