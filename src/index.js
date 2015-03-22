@@ -1,13 +1,14 @@
 var path = require('path');
 
+var RSVP = require('rsvp');
 var express = require('express');
 var serveStatic = require('serve-static');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var Assessments = require('mm-assessments');
 var _assessments = null;
-
-
+var TestsInterface = require('mm-tests-interface');
+var platformMatcher = require('mm-platform-matcher');
 
 var app = express();
 app.engine('html', ejs.renderFile);
@@ -22,7 +23,6 @@ app.use(
         'static'
         ))
 );
-
 
 app.get(
     '/back-office',
@@ -55,7 +55,7 @@ app.post(
             +(new Date())
         )
             .then(function() {
-                response.redirect('/admin');
+                response.redirect('/back-office/assessments');
             })
             .catch(function(error) {
                 console.error(error);
@@ -63,20 +63,23 @@ app.post(
     });
 
 function retrieveAdminData() {
-    return _assessments.getAssessments()
-        .then(function(assessments) {
+    return RSVP.hash({
+        assessments: _assessments.getAssessments(),
+        testTags: _testsInterface.getTestTags()
+    })
+        .then(function(hash) {
             return {
                 backOfficeUrl: '/',
-                assessments: assessments
+                assessments: hash.assessments,
+                testTags: hash.testTags,
+                platformTags: platformMatcher.getPlatformTags()
             };
-        })
-        .catch(function(error) {
-            console.error(error);
         });
 }
 
 
 module.exports = function(assessments) {
     _assessments = assessments;
+    _testsInterface = new TestsInterface(assessments.getDataAdapter());
     return app;
 };

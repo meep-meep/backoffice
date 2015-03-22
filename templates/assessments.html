@@ -15,6 +15,7 @@
             <span>
                 -Assessments
             </span>
+
         </div>
 <% if(assessments.length) { %>
     <div class="table">
@@ -105,7 +106,7 @@
                     </div>
                     <div class="label-group">
                         <input
-                            class="grouped-form-text-field create-assessment-field"
+                            class="grouped-form-text-field create-assessment-field test-tags-input"
                             type="text"
                             name="test-tags"
                             placeholder="Coma-separated test tags"
@@ -113,7 +114,7 @@
                             />
 
                         <input
-                            class="grouped-form-text-field create-assessment-field"
+                            class="grouped-form-text-field create-assessment-field platform-tags-input"
                             type="text"
                             name="platform-tags"
                             placeholder="Coma-separated platform tags or 'any'"
@@ -129,5 +130,11 @@
             </div>
             <input type="submit" class="button action" id="create-assessment" value="Create"/>
         </form>
+
+        <script type="text/javascript">
+            var testTags = [<%- testTags.map(function(tag){return '"' + tag + '"';}) %>];
+            var platformTags = [<%- platformTags.map(function(tag){return '"' + tag + '"';}) %>];
+        </script>
+        <script type="text/javascript" src="/back-office/static/src/ui.js"></script>
     </body>
 </html>
