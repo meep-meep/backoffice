@@ -49,12 +49,12 @@
 
 .tests-column {
     flex-grow: 1;
-    text-align: right;
+    text-align: center;
 }
 
 .platforms-column {
     flex-grow: 1;
-    text-align: left;
+    text-align: center;
 }
 
 .constraint {
