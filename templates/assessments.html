@@ -41,7 +41,7 @@
             <% assessments.forEach(function(assessment) { %>
                 <div class="table-item tests-field">
                     <% assessment.definition.forEach(function(constraint) { %>
-                    <a href="/tests?tags=<%= constraint[0] %>">
+                    <a href="/tests?tags=<%= constraint[0] %>" target="_blank">
                         <div>
                             <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
                         </div>
