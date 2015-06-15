@@ -1,4 +1,30 @@
 <link rel="stylesheet" type="text/css" href="/styles/base.css"/>
+<link rel="stylesheet" type="text/css" href="/back-office/static/style/test-editing.css"/>
 
 <% var title = 'Tests edition'; %>
 <% include title.html %>
+
+<div class="test-editing">
+    <label>Test tags :</label>
+    <input type="text" class="form-text-field" placeholder="Coma-separated test tags"></input>
+
+    <div>
+        <label>Test Contents :</label>
+        <div class="test-contents">
+
+        </div>
+    </div>
+
+    <% tests.forEach(function(test) { %>
+    <div class="">
+        <% Object.keys(test).forEach(function(tag) { %>
+            <div class="tag">
+                <%= tag %>
+            </div>
+        <% }) %>
+    </div>
+    <% }); %>
+</div>
+
+<script type="text/javascript" src="/back-office/static/src/test-editing.js"></script>
+

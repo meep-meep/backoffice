@@ -33,7 +33,10 @@ app.get(
 app.get(
     '/back-office/tests',
     function(request, response, next) {
-        response.render('test-editing.html', {});
+        _testsInterface.getTests()
+            .then(function(tests) {
+                response.render('test-editing.html', {tests: tests});
+            });
     });
 
 app.get(
@@ -42,7 +45,7 @@ app.get(
         retrieveAdminData()
             .then(function(adminData) {
                 response.render('assessments.html', adminData);
-            })
+            });
     });
 
 app.post(
