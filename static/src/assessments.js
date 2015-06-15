@@ -19,21 +19,21 @@ function makeAutoCompleter(tagList) {
             var matchingTags = tagList.filter(function(tag) {return tag.toLowerCase().indexOf(lastELement.toLowerCase()) === 0;});
 
             setTimeout(function() {
-                inputElement.value = '';
-                var newTagList = [];
-                newTagList = newTagList.concat(inputTagList.slice(0, -1));
+                var inputText = inputElement.value;
+                inputElement.value = currentText;
 
                 if(matchingTags.length) {
-                    newTagList.push(matchingTags[0]);
+                    inputText = inputText.substr(0, inputText.length - inputTagList[inputTagList.length -1].length);
+                    inputText += matchingTags[0];
                 }
                 else {
-                    newTagList.push(inputTagList[inputTagList.length - 1]);
+                    inputText = currentText;
                 }
-                inputElement.value += newTagList.join(',');
-                createSelection(inputElement, currentText.length, newTagList.join(',').length);
+                inputElement.value = inputText;
+                createSelection(inputElement, currentText.length, inputText.length);
             });
         }
-    }
+    };
 }
 
 function createSelection(field, start, end) {
@@ -56,12 +56,13 @@ function createSelection(field, start, end) {
 
 window.onload = function() {
     var testTagsInputs = document.getElementsByClassName('test-tags-input');
-    for(var i = 0 ; i < testTagsInputs.length ; i++) {
+    var i;
+    for(i = 0 ; i < testTagsInputs.length ; i++) {
         testTagsInputs[i].trueInput = '';
         testTagsInputs[i].addEventListener('keypress', makeAutoCompleter(testTags));
     }
     var platformTagsInputs = document.getElementsByClassName('platform-tags-input');
-    for(var i = 0 ; i < platformTagsInputs.length ; i++) {
+    for(i = 0 ; i < platformTagsInputs.length ; i++) {
         platformTagsInputs[i].trueInput = '';
         platformTagsInputs[i].addEventListener('keypress', makeAutoCompleter(platformTags));
     }
