@@ -48,7 +48,7 @@ app.get(
     });
 
 app.post(
-    '/assessments',
+    '/back-office/assessments',
     function(request, response, next) {
         _assessments.createAssessment(
             request.body['name'],
@@ -71,7 +71,7 @@ function retrieveAdminData() {
     })
         .then(function(hash) {
             return {
-                backOfficeUrl: '/',
+                backOfficeUrl: '/back-office/',
                 assessments: hash.assessments,
                 testTags: hash.testTags,
                 platformTags: platformMatcher.getPlatformTags()
