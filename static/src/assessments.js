@@ -1,5 +1,8 @@
 function makeAutoCompleter(tagList) {
     return function (event) {
+        if(event.keyCode === 13) {
+            return;
+        }
         var inputElement = event.currentTarget;
         if(typeof inputElement.selectionStart === 'number') {
             inputElement.value = inputElement.value.substr(0, inputElement.selectionStart);
