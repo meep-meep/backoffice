@@ -26,11 +26,17 @@ app.use(
         ))
 );
 
+var mainEntryPoint = function(request, response, next) {
+    response.render('main-interface.html', {});
+};
+
 app.get(
     '/back-office',
-    function(request, response, next) {
-        response.render('main-interface.html', {});
-    });
+    mainEntryPoint);
+
+app.get(
+    '/bo',
+    mainEntryPoint);
 
 app.get(
     '/back-office/tests',
@@ -44,7 +50,7 @@ app.get(
         retrieveAdminData()
             .then(function(adminData) {
                 response.render('assessments.html', adminData);
-            })
+            });
     });
 
 app.post(
@@ -52,8 +58,7 @@ app.post(
     function(request, response, next) {
         _assessments.createAssessment(
             request.body['name'],
-            request.body['test-tags'],
-            request.body['platform-tags'],
+            [[request.body['test-tags'], request.body['platform-tags']]],
             +(new Date())
         )
             .then(function() {
