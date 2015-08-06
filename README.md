@@ -3,16 +3,18 @@ middleware that provides a backoffice to manage automated tests.
 
 available endpoints :
 
-GET /memory-dump.json
+GET /back-office
 
-outputs the contents of current data adapter in json format
+summary of every available pages in the back-office
 
+GET /back-office/tests
 
-GET /admin
+editor for available tests (still WIP)
 
-serves the backoffice interface
+GET /back-office/assessments
 
+editor for assessments
 
-POST /objectives
+POST /back-office/assessments
 
-creates a new test objective
+creates a new test assessment
