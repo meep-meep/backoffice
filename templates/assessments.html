@@ -43,7 +43,7 @@
                     <% assessment.definition.forEach(function(constraint) { %>
                     <a href="/tests?tags=<%= constraint[0] %>" target="_blank">
                         <div>
-                            <%- constraint[0].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
+                            <%- constraint[0].map(function(tag) {return '<span class="tag definition-tag">' + tag + '</span> '}).join('') %>
                         </div>
                     </a>
                     <% }); %>
@@ -60,7 +60,7 @@
                     <% assessment.definition.forEach(function(constraint) { %>
                     <div>
                         <span>
-                        <%- constraint[1].split(',').map(function(tag) {return '<span class="tag definition-tag">' + tag.trim() + '</span> '}).join('') %>
+                        <%- constraint[1].map(function(tag) {return '<span class="tag definition-tag">' + tag + '</span> '}).join('') %>
                         </span>
                     </div>
                     <% }); %>

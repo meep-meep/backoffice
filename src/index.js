@@ -50,6 +50,9 @@ app.get(
         retrieveAdminData()
             .then(function(adminData) {
                 response.render('assessments.html', adminData);
+            })
+            .catch(function(error) {
+                console.error(error);
             });
     });
 
@@ -57,8 +60,13 @@ app.post(
     '/back-office/assessments',
     function(request, response, next) {
         _assessments.createAssessment(
-            request.body['name'],
-            [[request.body['test-tags'], request.body['platform-tags']]],
+            request.body.name,
+            [
+                [
+                    JSON.parse('[' + request.body['test-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']'),
+                    JSON.parse('[' + request.body['platform-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']')
+                ]
+            ],
             +(new Date())
         )
             .then(function() {
