@@ -56,21 +56,63 @@ app.get(
             });
     });
 
+function getNewAssessmentName(assessments) {
+    var number = 0;
+    var candidateNumber;
+    assessments.forEach(function(assessment) {
+        console.log('testing name ', assessment.name);
+        if(/^unnamed_(\d)+$/.test(assessment.name)) {
+            candidateNumber = parseInt(assessment.name.substr(8)) + 1;
+            number = (candidateNumber > number) ? candidateNumber : number;
+        }
+    });
+    return 'unnamed_' + number;
+}
+
 app.post(
     '/back-office/assessments',
     function(request, response, next) {
-        _assessments.createAssessment(
-            request.body.name,
-            [
-                [
-                    JSON.parse('[' + request.body['test-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']'),
-                    JSON.parse('[' + request.body['platform-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']')
-                ]
-            ],
-            +(new Date())
-        )
+        _assessments.getAssessments()
+            .then(function(assessments) {
+                var assessmentName = request.body.name;
+                if(!assessmentName) {
+                    assessmentName = getNewAssessmentName(assessments);
+                }
+                return _assessments.createAssessment(
+                    assessmentName,
+                    [
+                        [
+                            JSON.parse('[' + request.body['test-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']'),
+                            JSON.parse('[' + request.body['platform-tags'].split(',').map(function(tag) {return '"' + tag.trim() + '"';}).join(',') + ']')
+                        ]
+                    ],
+                    +(new Date())
+                );
+            })
             .then(function() {
                 response.redirect('/back-office/assessments');
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+    });
+
+app.get(
+    '/back-office/results',
+    function(request, response, next) {
+        var qs = queryString.parse(request.url.split('?')[1]);
+        RSVP.hash({
+            results: _dataAdapter.reader(),
+            assessments: _assessments.getAssessments()
+        })
+            .then(function(hash) {
+                var requestedAssessment = hash.assessments.filter(function(assessment) {return assessment.name === qs.assessment;})[0];
+                response.render('results.html', {
+                    assessment: requestedAssessment,
+                    results: hash.results.filter(function(result) {
+                        return _assessments .matchTestToAssessment(result, requestedAssessment);
+                    })
+                });
             })
             .catch(function(error) {
                 console.error(error);
