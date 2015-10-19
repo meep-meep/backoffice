@@ -27,9 +27,13 @@
             </div>
             <% assessments.forEach(function(assessment) { %>
                 <div class="table-item assessment-item">
-                    <div class="tag status-<%= assessment.status.toLowerCase().replace(/ /g, '-') %>">
+                    <a
+                        class="tag status-<%= assessment.status.toLowerCase().replace(/ /g, '-') %>"
+                        href="/back-office/results?assessment=<%= assessment.name %>"
+                        target="_blank"
+                    >
                         <%= assessment.status %>
-                    </div>
+                    </a>
                 </div>
             <% }); %>
         </div>

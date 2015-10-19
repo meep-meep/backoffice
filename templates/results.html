@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Results</title>
+        <link rel="stylesheet" type="text/css" href="/styles/base.css"/>
+    </head>
+    <body>
+        <% if(assessment) { %>
+
+        <% var title = 'Results for assessment "' + assessment.name + '"'; %>
+        <% include title.html %>
+        <div class="table">
+            <div class="table-column fixed-column">
+                <div class="table-column-header assessment-item">
+                    Test tags
+                </div>
+
+                <% results.forEach(function(result) { %>
+                <div class="table-item">
+                    <%=  result.tags %>
+                </div>
+                <% }); %>
+            </div>
+
+            <div class="table-column fixed-column">
+                <div class="table-column-header assessment-item">
+                    Status
+                </div>
+
+                <% results.forEach(function(result) { %>
+                <div class="table-item">
+                    <% if(result.failures) { %>
+                        Failure
+                    <% } else { %>
+                        Success
+                    <% } %>
+                </div>
+                <% }); %>
+            </div>
+
+            <div class="table-column fixed-column">
+                <div class="table-column-header assessment-item">
+                    Relaunch
+                </div>
+
+                <% results.forEach(function(result) { %>
+                <div class="table-item">
+                    <a class="" href="/tests?tags=<%= result.tags.replace(' ', '') %>&oneShot=true&env=<%= result.env %>">relaunch</a>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <% } %>
+    </body>
+</html>

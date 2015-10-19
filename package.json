@@ -20,9 +20,10 @@
     "ejs": "^2.3.1",
     "express": "^4.12.0",
     "mm-assessments": "git://github.com/meep-meep/assessments.git",
-    "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git",
     "mm-platform-matcher": "git://github.com/meep-meep/platform-matcher.git",
     "mm-tests-interface": "git://github.com/meep-meep/tests-interface.git",
+    "mm-visual-styles": "git://github.com/meep-meep/visual-styles.git",
+    "querystring": "^0.2.0",
     "rsvp": "^3.0.17",
     "serve-static": "^1.9.1"
   },

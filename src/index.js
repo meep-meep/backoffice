@@ -1,6 +1,7 @@
 var path = require('path');
 
 var RSVP = require('rsvp');
+var queryString = require('querystring');
 var express = require('express');
 var serveStatic = require('serve-static');
 var bodyParser = require('body-parser');
@@ -9,6 +10,8 @@ var ejs = require('ejs');
 var Assessments = require('mm-assessments');
 var _assessments = null;
 var TestsInterface = require('mm-tests-interface');
+var _testsInterface = null;
+var _dataAdapter = null;
 var platformMatcher = require('mm-platform-matcher');
 
 
@@ -137,6 +140,7 @@ function retrieveAdminData() {
 
 module.exports = function(assessments) {
     _assessments = assessments;
-    _testsInterface = new TestsInterface(assessments.getDataAdapter());
+    _dataAdapter = assessments.getDataAdapter();
+    _testsInterface = new TestsInterface(_dataAdapter);
     return app;
 };
