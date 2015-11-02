@@ -113,7 +113,7 @@ app.get(
                 response.render('results.html', {
                     assessment: requestedAssessment,
                     results: hash.results.filter(function(result) {
-                        return _assessments .matchTestToAssessment(result, requestedAssessment);
+                        return _assessments.matchTestToAssessment(result, requestedAssessment);
                     })
                 });
             })
